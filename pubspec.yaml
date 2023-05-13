@@ -36,6 +36,38 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  #State Management
+  flutter_riverpod: ^2.3.6
+  hooks_riverpod: ^2.3.6
+  flutter_hooks: ^0.18.5+1
+  json_annotation: ^4.6.0
+  riverpod_annotation: ^2.1.1
+
+  #Networking
+  retrofit: 3.0.1+1
+  dio: ^4.0.6
+
+   #Navigation
+  auto_route: ^5.0.1
+
+  #Converter
+  intl: ^0.17.0
+
+  #Model
+  freezed_annotation: ^2.1.0
+
+  #Storage
+  shared_preferences: ^2.0.15
+  flutter_secure_storage: ^6.0.0
+  isar: ^3.0.5
+  isar_flutter_libs: ^3.0.5
+
+  #Tools
+  dartz: ^0.10.1
+  connectivity_plus: ^3.0.3
+  geolocator: ^9.0.2
+  path_provider: ^2.0.11
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -46,6 +78,25 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+  #auto generate
+  build_runner:
+  isar_generator: ^3.0.5
+  riverpod_generator: ^2.2.1
+
+  #Model
+  freezed: ^2.1.0+1
+  json_serializable:
+
+  #Route
+  auto_route_generator: ^5.0.1
+
+  #Networking
+  retrofit_generator: '>=4.0.0 <5.0.0'
+
+  #Test
+  #  state_notifier_test: ^0.0.7
+  mocktail: ^0.3.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
