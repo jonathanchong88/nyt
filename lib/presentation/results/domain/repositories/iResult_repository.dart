@@ -5,6 +5,7 @@ import 'package:nyt/presentation/results/domain/entity/result_entity.dart';
 abstract class IResultRepository {
   Future<Either<Failure, List<ResultEntity>>> getSearchResults(
     String query,
+    int page,
   );
 
   Future<Either<Failure, List<ResultEntity>>> getMostViewResults();

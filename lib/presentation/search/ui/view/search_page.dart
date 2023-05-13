@@ -16,6 +16,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   bool enabled = false;
   TextEditingController searchEditController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,16 +29,19 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         key: _formKey,
         child: Column(
           children: [
-            TextFormField(
-              controller: searchEditController,
-              decoration:
-                  const InputDecoration(hintText: 'Search Articles here ...'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                controller: searchEditController,
+                decoration:
+                    const InputDecoration(hintText: 'Search Articles here ...'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+              ),
             ),
             const SizedBox(
               height: 18,

@@ -16,15 +16,38 @@ class ResultPage extends ConsumerStatefulWidget {
 }
 
 class _ResultPageState extends ConsumerState<ResultPage> {
+  var scrollController = ScrollController();
+  int page = 0;
+
+  void pagination() {
+    if (widget.queryParam != null) {
+      if ((scrollController.position.pixels ==
+              scrollController.position.maxScrollExtent) &&
+          (page <= 200)) {
+        // setState(() {
+        page += 1;
+        ref
+            .read(resultControllerProvider.notifier)
+            .getSearchResults(widget.queryParam!, page);
+        // });
+      } else if (page > 200) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("END"),
+        ));
+      }
+    }
+  }
+
   @override
   void initState() {
+    scrollController.addListener(pagination);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.queryParam == null) {
         ref.read(resultControllerProvider.notifier).getMostViewResults();
       } else {
         ref
             .read(resultControllerProvider.notifier)
-            .getSearchResults(widget.queryParam!);
+            .getSearchResults(widget.queryParam!, 0);
       }
     });
     super.initState();
@@ -42,6 +65,7 @@ class _ResultPageState extends ConsumerState<ResultPage> {
           return ListView.separated(
             shrinkWrap: true,
             itemCount: data.length,
+            controller: scrollController,
             itemBuilder: (context, index) {
               return ListTile(
                 title: Text(data[index].title),

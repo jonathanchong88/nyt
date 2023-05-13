@@ -17,6 +17,7 @@ abstract class ResultApiService {
   @GET(AppString.nytSearchUrl)
   Future<SearchResultModel> getSearchResult(
     @Query('q') String queryParam,
+    @Query('page') String page,
     @Query('api-key') String apiKey,
   );
 

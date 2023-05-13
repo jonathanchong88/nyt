@@ -40,12 +40,12 @@ class ResultRepository implements IResultRepository {
 
   @override
   Future<Either<Failure, List<ResultEntity>>> getSearchResults(
-      String query) async {
+      String query, int page) async {
     var response = <ResultEntity>[];
     try {
       if ((await networkInfo.isConnected)) {
-        final searchResponse =
-            await _api.getSearchResult(query, AppString.nytAPiKey);
+        final searchResponse = await _api.getSearchResult(
+            query, page.toString(), AppString.nytAPiKey);
         await _localDataSource.setSearchResult(searchResponse);
         response = searchResponse.toEntity();
       } else {

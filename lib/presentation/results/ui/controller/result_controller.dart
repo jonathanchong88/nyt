@@ -6,21 +6,30 @@ part 'result_controller.g.dart';
 
 @riverpod
 class ResultController extends _$ResultController {
+  late List<ResultEntity>? resultEntitys = [];
   @override
   FutureOr<List<ResultEntity>> build() {
     // nothing to do
     return [];
   }
 
-  Future<void> getSearchResults(String query) async {
-    state = const AsyncValue.loading();
+  Future<void> getSearchResults(String query, int page) async {
+    if (page == 0) {
+      state = const AsyncValue.loading();
+    }
     final failureOrData =
-        await ref.read(resultProvider).getSearchResults(query);
+        await ref.read(resultProvider).getSearchResults(query, page);
 
     state = failureOrData.fold(
       (failure) => AsyncError(failure, StackTrace.empty),
       (results) {
-        return AsyncValue.data(results);
+        if (state.value!.length > 1) {
+          resultEntitys!.addAll(results);
+          return AsyncValue.data(resultEntitys!);
+        } else {
+          resultEntitys = results;
+          return AsyncValue.data(resultEntitys!);
+        }
       },
     );
   }

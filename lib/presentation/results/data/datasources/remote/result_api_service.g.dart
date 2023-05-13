@@ -21,11 +21,13 @@ class _ResultApiService implements ResultApiService {
   @override
   Future<SearchResultModel> getSearchResult(
     queryParam,
+    page,
     apiKey,
   ) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'q': queryParam,
+      r'page': page,
       r'api-key': apiKey,
     };
     final _headers = <String, dynamic>{};
