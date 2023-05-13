@@ -1,26 +1,31 @@
-// Welcome welcomeFromJson(String str) => Welcome.fromJson(json.decode(str));
-//
-// String welcomeToJson(Welcome data) => json.encode(data.toJson());
-
+import 'package:isar/isar.dart';
 import 'package:nyt/presentation/results/domain/domain.dart';
 
+part 'most_view_result_model.g.dart';
+
+@collection
 class MostViewResultModel {
-  final String status;
-  final String copyright;
-  final int numResults;
-  final List<Result> results;
+  final Id id;
+  final String? status;
+  final String? copyright;
+  final int? numResults;
+  final List<Result>? results;
 
   MostViewResultModel({
-    required this.status,
-    required this.copyright,
-    required this.numResults,
-    required this.results,
-  });
+    this.status,
+    this.copyright,
+    this.numResults,
+    this.results,
+  }) : id = Isar.autoIncrement;
 
   List<ResultEntity> toEntity() {
-    return results
+    print(results);
+    return results!
         .map(
-          (e) => ResultEntity(title: e.title, datePublished: e.publishedDate),
+          (e) => ResultEntity(
+            title: e.title!,
+            datePublished: e.publishedDate,
+          ),
         )
         .toList();
   }
@@ -30,65 +35,70 @@ class MostViewResultModel {
         status: json["status"],
         copyright: json["copyright"],
         numResults: json["num_results"],
-        results:
-            List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
+        results: json["results"] == null
+            ? []
+            : List<Result>.from(
+                json["results"]!.map((x) => Result.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "status": status,
         "copyright": copyright,
         "num_results": numResults,
-        "results": List<dynamic>.from(results.map((x) => x.toJson())),
+        "results": results == null
+            ? []
+            : List<dynamic>.from(results!.map((x) => x.toJson())),
       };
 }
 
+@embedded
 class Result {
-  final String uri;
-  final String url;
-  final int id;
-  final int assetId;
-  final String source;
-  final DateTime publishedDate;
-  final String updated;
-  final String section;
-  final String subsection;
-  final String nytdsection;
-  final String adxKeywords;
-  final dynamic column;
-  final String byline;
-  final String type;
-  final String title;
-  final String resultAbstract;
-  final List<String> desFacet;
-  final List<String> orgFacet;
-  final List<String> perFacet;
-  final List<String> geoFacet;
-  final List<Media> media;
-  final int etaId;
+  final String? uri;
+  final String? url;
+  final int? id;
+  final int? assetId;
+  final String? source;
+  final DateTime? publishedDate;
+  final String? updated;
+  final String? section;
+  final String? subsection;
+  final String? nytdsection;
+  final String? adxKeywords;
+  final String? column;
+  final String? byline;
+  final String? type;
+  final String? title;
+  final String? resultAbstract;
+  final List<String>? desFacet;
+  final List<String>? orgFacet;
+  final List<String>? perFacet;
+  final List<String>? geoFacet;
+  final List<Media>? media;
+  final int? etaId;
 
   Result({
-    required this.uri,
-    required this.url,
-    required this.id,
-    required this.assetId,
-    required this.source,
-    required this.publishedDate,
-    required this.updated,
-    required this.section,
-    required this.subsection,
-    required this.nytdsection,
-    required this.adxKeywords,
-    required this.column,
-    required this.byline,
-    required this.type,
-    required this.title,
-    required this.resultAbstract,
-    required this.desFacet,
-    required this.orgFacet,
-    required this.perFacet,
-    required this.geoFacet,
-    required this.media,
-    required this.etaId,
+    this.uri,
+    this.url,
+    this.id,
+    this.assetId,
+    this.source,
+    this.publishedDate,
+    this.updated,
+    this.section,
+    this.subsection,
+    this.nytdsection,
+    this.adxKeywords,
+    this.column,
+    this.byline,
+    this.type,
+    this.title,
+    this.resultAbstract,
+    this.desFacet,
+    this.orgFacet,
+    this.perFacet,
+    this.geoFacet,
+    this.media,
+    this.etaId,
   });
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
@@ -97,7 +107,9 @@ class Result {
         id: json["id"],
         assetId: json["asset_id"],
         source: json["source"],
-        publishedDate: DateTime.parse(json["published_date"]),
+        publishedDate: json["published_date"] == null
+            ? null
+            : DateTime.parse(json["published_date"]),
         updated: json["updated"],
         section: json["section"],
         subsection: json["subsection"],
@@ -108,11 +120,21 @@ class Result {
         type: json["type"],
         title: json["title"],
         resultAbstract: json["abstract"],
-        desFacet: List<String>.from(json["des_facet"].map((x) => x)),
-        orgFacet: List<String>.from(json["org_facet"].map((x) => x)),
-        perFacet: List<String>.from(json["per_facet"].map((x) => x)),
-        geoFacet: List<String>.from(json["geo_facet"].map((x) => x)),
-        media: List<Media>.from(json["media"].map((x) => Media.fromJson(x))),
+        desFacet: json["des_facet"] == null
+            ? []
+            : List<String>.from(json["des_facet"]!.map((x) => x)),
+        orgFacet: json["org_facet"] == null
+            ? []
+            : List<String>.from(json["org_facet"]!.map((x) => x)),
+        perFacet: json["per_facet"] == null
+            ? []
+            : List<String>.from(json["per_facet"]!.map((x) => x)),
+        geoFacet: json["geo_facet"] == null
+            ? []
+            : List<String>.from(json["geo_facet"]!.map((x) => x)),
+        media: json["media"] == null
+            ? []
+            : List<Media>.from(json["media"]!.map((x) => Media.fromJson(x))),
         etaId: json["eta_id"],
       );
 
@@ -123,7 +145,7 @@ class Result {
         "asset_id": assetId,
         "source": source,
         "published_date":
-            "${publishedDate.year.toString().padLeft(4, '0')}-${publishedDate.month.toString().padLeft(2, '0')}-${publishedDate.day.toString().padLeft(2, '0')}",
+            "${publishedDate!.year.toString().padLeft(4, '0')}-${publishedDate!.month.toString().padLeft(2, '0')}-${publishedDate!.day.toString().padLeft(2, '0')}",
         "updated": updated,
         "section": section,
         "subsection": subsection,
@@ -134,30 +156,37 @@ class Result {
         "type": type,
         "title": title,
         "abstract": resultAbstract,
-        "des_facet": List<dynamic>.from(desFacet.map((x) => x)),
-        "org_facet": List<dynamic>.from(orgFacet.map((x) => x)),
-        "per_facet": List<dynamic>.from(perFacet.map((x) => x)),
-        "geo_facet": List<dynamic>.from(geoFacet.map((x) => x)),
-        "media": List<dynamic>.from(media.map((x) => x.toJson())),
+        "des_facet":
+            desFacet == null ? [] : List<dynamic>.from(desFacet!.map((x) => x)),
+        "org_facet":
+            orgFacet == null ? [] : List<dynamic>.from(orgFacet!.map((x) => x)),
+        "per_facet":
+            perFacet == null ? [] : List<dynamic>.from(perFacet!.map((x) => x)),
+        "geo_facet":
+            geoFacet == null ? [] : List<dynamic>.from(geoFacet!.map((x) => x)),
+        "media": media == null
+            ? []
+            : List<dynamic>.from(media!.map((x) => x.toJson())),
         "eta_id": etaId,
       };
 }
 
+@embedded
 class Media {
-  final String type;
-  final String subtype;
-  final String caption;
-  final String copyright;
-  final int approvedForSyndication;
-  final List<MediaMetadatum> mediaMetadata;
+  final String? type;
+  final String? subtype;
+  final String? caption;
+  final String? copyright;
+  final int? approvedForSyndication;
+  final List<MediaMetadatum>? mediaMetadata;
 
   Media({
-    required this.type,
-    required this.subtype,
-    required this.caption,
-    required this.copyright,
-    required this.approvedForSyndication,
-    required this.mediaMetadata,
+    this.type,
+    this.subtype,
+    this.caption,
+    this.copyright,
+    this.approvedForSyndication,
+    this.mediaMetadata,
   });
 
   factory Media.fromJson(Map<String, dynamic> json) => Media(
@@ -166,8 +195,10 @@ class Media {
         caption: json["caption"],
         copyright: json["copyright"],
         approvedForSyndication: json["approved_for_syndication"],
-        mediaMetadata: List<MediaMetadatum>.from(
-            json["media-metadata"].map((x) => MediaMetadatum.fromJson(x))),
+        mediaMetadata: json["media-metadata"] == null
+            ? []
+            : List<MediaMetadatum>.from(
+                json["media-metadata"]!.map((x) => MediaMetadatum.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -176,22 +207,24 @@ class Media {
         "caption": caption,
         "copyright": copyright,
         "approved_for_syndication": approvedForSyndication,
-        "media-metadata":
-            List<dynamic>.from(mediaMetadata.map((x) => x.toJson())),
+        "media-metadata": mediaMetadata == null
+            ? []
+            : List<dynamic>.from(mediaMetadata!.map((x) => x.toJson())),
       };
 }
 
+@embedded
 class MediaMetadatum {
-  final String url;
-  final String format;
-  final int height;
-  final int width;
+  final String? url;
+  final String? format;
+  final int? height;
+  final int? width;
 
   MediaMetadatum({
-    required this.url,
-    required this.format,
-    required this.height,
-    required this.width,
+    this.url,
+    this.format,
+    this.height,
+    this.width,
   });
 
   factory MediaMetadatum.fromJson(Map<String, dynamic> json) => MediaMetadatum(

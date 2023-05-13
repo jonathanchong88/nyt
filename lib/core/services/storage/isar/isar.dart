@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
+import 'package:nyt/presentation/results/data/data.dart';
 import 'package:path_provider/path_provider.dart';
 
 part 'database_service.dart';

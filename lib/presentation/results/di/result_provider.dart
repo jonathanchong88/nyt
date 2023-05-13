@@ -7,5 +7,6 @@ final resultProvider = Provider.autoDispose<IResultRepository>((ref) {
   return ResultRepository(
     ref.watch(resultApiServiceProvider),
     ref.watch(networkInfoProvider),
+    ref.watch(resultLocalDataSourceProvider),
   );
 });

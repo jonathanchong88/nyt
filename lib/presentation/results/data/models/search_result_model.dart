@@ -1,6 +1,11 @@
+import 'package:isar/isar.dart';
 import 'package:nyt/presentation/results/domain/domain.dart';
 
+part 'search_result_model.g.dart';
+
+@collection
 class SearchResultModel {
+  final Id id;
   final String? status;
   final String? copyright;
   final Response? response;
@@ -9,7 +14,7 @@ class SearchResultModel {
     this.status,
     this.copyright,
     this.response,
-  });
+  }) : id = Isar.autoIncrement;
 
   List<ResultEntity> toEntity() {
     return response!.docs!
@@ -38,6 +43,7 @@ class SearchResultModel {
       };
 }
 
+@embedded
 class Response {
   final List<Doc>? docs;
   final Meta? meta;
@@ -62,6 +68,7 @@ class Response {
       };
 }
 
+@embedded
 class Doc {
   final String? docAbstract;
   final String? webUrl;
@@ -166,10 +173,11 @@ class Doc {
       };
 }
 
+@embedded
 class Byline {
   final String? original;
   final List<Person>? person;
-  final dynamic organization;
+  final String? organization;
 
   Byline({
     this.original,
@@ -194,12 +202,13 @@ class Byline {
       };
 }
 
+@embedded
 class Person {
   final String? firstname;
-  final dynamic middlename;
+  final String? middlename;
   final String? lastname;
-  final dynamic qualifier;
-  final dynamic title;
+  final String? qualifier;
+  final String? title;
   final String? role;
   final String? organization;
   final int? rank;
@@ -238,14 +247,15 @@ class Person {
       };
 }
 
+@embedded
 class Headline {
   final String? main;
   final String? kicker;
-  final dynamic contentKicker;
+  final String? contentKicker;
   final String? printHeadline;
-  final dynamic name;
-  final dynamic seo;
-  final dynamic sub;
+  final String? name;
+  final String? seo;
+  final String? sub;
 
   Headline({
     this.main,
@@ -278,6 +288,7 @@ class Headline {
       };
 }
 
+@embedded
 class Keyword {
   final String? name;
   final String? value;
@@ -306,11 +317,12 @@ class Keyword {
       };
 }
 
+@embedded
 class Multimedia {
   final int? rank;
   final String? subtype;
-  final dynamic caption;
-  final dynamic credit;
+  final String? caption;
+  final String? credit;
   final String? type;
   final String? url;
   final int? height;
@@ -362,6 +374,7 @@ class Multimedia {
       };
 }
 
+@embedded
 class Legacy {
   final String? xlarge;
   final int? xlargewidth;
@@ -410,6 +423,7 @@ class Legacy {
       };
 }
 
+@embedded
 class Meta {
   final int? hits;
   final int? offset;

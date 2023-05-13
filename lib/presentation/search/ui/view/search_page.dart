@@ -15,6 +15,7 @@ class SearchPage extends ConsumerStatefulWidget {
 class _SearchPageState extends ConsumerState<SearchPage> {
   bool enabled = false;
   TextEditingController searchEditController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,39 +24,38 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         // the App.build method, and use it to set our appbar title.
         title: const Text('Search'),
       ),
-      body: Column(
-        children: [
-          TextFormField(
-            controller: searchEditController,
-            decoration:
-                const InputDecoration(hintText: 'Search Articles here ...'),
-            // validator: ,
-          ),
-          const SizedBox(
-            height: 18,
-          ),
-          RawMaterialButton(
-            padding: const EdgeInsets.all(10.0),
-            disabledElevation: 1,
-            fillColor: enabled ? Colors.indigo : Colors.black45,
-            textStyle:
-                TextStyle(color: enabled ? Colors.white : Colors.white70),
-            onPressed: enabled ? () {} : null,
-            child: const Text(
-              "Search",
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: searchEditController,
+              decoration:
+                  const InputDecoration(hintText: 'Search Articles here ...'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
             ),
-          ),
-          ElevatedButton(
-            // style: raisedButtonStyle,
-            onPressed: () {
-              context.pushRoute(ResultRoute(queryParam: 'election'));
-            },
-            child: const Text('Search'),
-          )
-        ],
+            const SizedBox(
+              height: 18,
+            ),
+            ElevatedButton(
+              // style: raisedButtonStyle,
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  // If the form is valid, display a snackbar. In the real world,
+                  // you'd often call a server or save the information in a database.
+                  context.pushRoute(
+                      ResultRoute(queryParam: searchEditController.text));
+                }
+              },
+              child: const Text('Search'),
+            )
+          ],
+        ),
       ),
     );
   }

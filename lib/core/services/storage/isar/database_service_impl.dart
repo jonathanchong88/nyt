@@ -18,7 +18,10 @@ class DatabaseServiceImpl implements DatabaseService {
   Future<void> init() async {
     direc = await getApplicationSupportDirectory();
     _isar = await Isar.open(
-      [],
+      [
+        MostViewResultModelSchema,
+        SearchResultModelSchema,
+      ],
       directory: direc.path,
     );
   }

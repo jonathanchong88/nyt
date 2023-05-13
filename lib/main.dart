@@ -2,8 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nyt/config/routes/router.gr.dart';
 
+import 'core/services/initServices/services_initializer.dart';
+
 void main() {
+  startApp();
+}
+
+void startApp() async {
   final container = ProviderContainer();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  await ServicesInitializer.instance.init(widgetsBinding, container);
+
   runApp(
     UncontrolledProviderScope(
       container: container,
