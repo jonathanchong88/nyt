@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nyt/core/core.dart';
 import 'package:nyt/presentation/results/ui/controller/result_controller.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class ResultPage extends ConsumerStatefulWidget {
   const ResultPage({
@@ -16,29 +17,36 @@ class ResultPage extends ConsumerStatefulWidget {
 }
 
 class _ResultPageState extends ConsumerState<ResultPage> {
-  var scrollController = ScrollController();
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
   int page = 0;
+  bool isEnd = false;
 
-  void pagination() {
+  void _onLoading() {
     if (widget.queryParam != null) {
-      if ((scrollController.position.pixels ==
-              scrollController.position.maxScrollExtent) &&
-          (page <= 200)) {
+      if (page <= 200) {
         page += 1;
         ref
             .read(resultControllerProvider.notifier)
             .getSearchResults(widget.queryParam!, page);
-      } else if (page > 200) {
+      } else {
+        isEnd = true;
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("END"),
         ));
       }
+    } else {
+      isEnd = true;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("END"),
+      ));
     }
+    setState(() {});
+    refreshController.loadComplete();
   }
 
   @override
   void initState() {
-    scrollController.addListener(pagination);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.queryParam == null) {
         ref.read(resultControllerProvider.notifier).getMostViewResults();
@@ -60,22 +68,27 @@ class _ResultPageState extends ConsumerState<ResultPage> {
       ),
       body: homeCtrl.when(
         data: (data) {
-          return ListView.separated(
-            shrinkWrap: true,
-            itemCount: data.length,
-            controller: scrollController,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(data[index].title),
-                subtitle:
-                    Text(data[index].datePublished!.convertDateTimeInFormat()),
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return const Divider(
-                height: 1,
-              );
-            },
+          return SmartRefresher(
+            enablePullDown: false,
+            enablePullUp: !isEnd,
+            controller: refreshController,
+            onLoading: _onLoading,
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(data[index].title),
+                  subtitle: Text(
+                      data[index].datePublished!.convertDateTimeInFormat()),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const Divider(
+                  height: 1,
+                );
+              },
+            ),
           );
         },
         error: (e, st) {
