@@ -20,7 +20,7 @@ class DatabaseServiceImpl implements DatabaseService {
     _isar = await Isar.open(
       [
         MostViewResultModelSchema,
-        SearchResultModelSchema,
+        DocSchema,
       ],
       directory: direc.path,
     );

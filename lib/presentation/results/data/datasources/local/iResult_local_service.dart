@@ -9,8 +9,8 @@ final resultLocalDataSourceProvider = Provider<IResultLocalDataSource>((ref) {
 });
 
 abstract class IResultLocalDataSource {
-  Future<SearchResultModel?> getSearchResult();
-  Future<void> setSearchResult(SearchResultModel searchResultModel);
+  Future<List<Doc>> getSearchResult();
+  Future<void> setSearchResult(List<Doc> docs);
   Future<MostViewResultModel?> getMostViewResult();
   Future<void> setMostViewResult(MostViewResultModel mostViewResultModel);
 }

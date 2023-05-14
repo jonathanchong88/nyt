@@ -3,9 +3,7 @@ import 'package:nyt/presentation/results/domain/domain.dart';
 
 part 'search_result_model.g.dart';
 
-@collection
 class SearchResultModel {
-  final Id id;
   final String? status;
   final String? copyright;
   final Response? response;
@@ -14,18 +12,7 @@ class SearchResultModel {
     this.status,
     this.copyright,
     this.response,
-  }) : id = Isar.autoIncrement;
-
-  List<ResultEntity> toEntity() {
-    return response!.docs!
-        .map(
-          (e) => ResultEntity(
-            title: e.headline!.main!,
-            datePublished: DateTime.parse(e.pubDate!),
-          ),
-        )
-        .toList();
-  }
+  });
 
   factory SearchResultModel.fromJson(Map<String, dynamic> json) =>
       SearchResultModel(
@@ -43,7 +30,6 @@ class SearchResultModel {
       };
 }
 
-@embedded
 class Response {
   final List<Doc>? docs;
   final Meta? meta;
@@ -68,7 +54,7 @@ class Response {
       };
 }
 
-@embedded
+@collection
 class Doc {
   final String? docAbstract;
   final String? webUrl;
@@ -85,11 +71,13 @@ class Doc {
   final String? subsectionName;
   final Byline? byline;
   final String? typeOfMaterial;
-  final String? id;
+  @Index(unique: true, replace: true)
+  final String? docId;
   final int? wordCount;
   final String? uri;
   final String? printSection;
   final String? printPage;
+  final Id id;
 
   Doc({
     this.docAbstract,
@@ -107,12 +95,17 @@ class Doc {
     this.subsectionName,
     this.byline,
     this.typeOfMaterial,
-    this.id,
+    this.docId,
     this.wordCount,
     this.uri,
     this.printSection,
     this.printPage,
-  });
+  }) : id = Isar.autoIncrement;
+
+  ResultEntity toEntity() {
+    return ResultEntity(
+        title: headline!.main!, datePublished: DateTime.parse(pubDate!));
+  }
 
   factory Doc.fromJson(Map<String, dynamic> json) => Doc(
         docAbstract: json["abstract"],
@@ -138,7 +131,7 @@ class Doc {
         subsectionName: json["subsection_name"],
         byline: json["byline"] == null ? null : Byline.fromJson(json["byline"]),
         typeOfMaterial: json["type_of_material"],
-        id: json["_id"],
+        docId: json["_id"],
         wordCount: json["word_count"],
         uri: json["uri"],
         printSection: json["print_section"],
@@ -165,7 +158,7 @@ class Doc {
         "subsection_name": subsectionName,
         "byline": byline?.toJson(),
         "type_of_material": typeOfMaterial,
-        "_id": id,
+        "_id": docId,
         "word_count": wordCount,
         "uri": uri,
         "print_section": printSection,

@@ -46,14 +46,22 @@ class ResultRepository implements IResultRepository {
       if ((await networkInfo.isConnected)) {
         final searchResponse = await _api.getSearchResult(
             query, page.toString(), AppString.nytAPiKey);
-        await _localDataSource.setSearchResult(searchResponse);
-        response = searchResponse.toEntity();
+        await _localDataSource.setSearchResult(searchResponse.response!.docs!);
+        response = searchResponse.response!.docs!
+            .map(
+              (e) => e.toEntity(),
+            )
+            .toList();
       } else {
-        final searchResponse = await _localDataSource.getSearchResult();
-        if (searchResponse == null) {
+        final docs = await _localDataSource.getSearchResult();
+        if (docs.isEmpty) {
           return left(const Failure.offline());
         }
-        response = searchResponse.toEntity();
+        response = docs
+            .map(
+              (e) => e.toEntity(),
+            )
+            .toList();
       }
       return right(response);
     } on DioError catch (e) {

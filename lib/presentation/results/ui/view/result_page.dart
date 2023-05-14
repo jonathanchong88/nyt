@@ -24,12 +24,10 @@ class _ResultPageState extends ConsumerState<ResultPage> {
       if ((scrollController.position.pixels ==
               scrollController.position.maxScrollExtent) &&
           (page <= 200)) {
-        // setState(() {
         page += 1;
         ref
             .read(resultControllerProvider.notifier)
             .getSearchResults(widget.queryParam!, page);
-        // });
       } else if (page > 200) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("END"),

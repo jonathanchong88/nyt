@@ -6,15 +6,14 @@ class ResultLocalDataSource implements IResultLocalDataSource {
   final Isar isar;
 
   @override
-  Future<SearchResultModel?> getSearchResult() async {
-    return await isar.searchResultModels.where().findFirst();
+  Future<List<Doc>> getSearchResult() async {
+    return await isar.docs.where().findAll();
   }
 
   @override
-  Future<void> setSearchResult(SearchResultModel searchResultModel) async {
+  Future<void> setSearchResult(List<Doc> docs) async {
     await isar.writeTxn(() async {
-      await isar.searchResultModels.clear();
-      await isar.searchResultModels.put(searchResultModel);
+      await isar.docs.putAll(docs);
     });
   }
 
