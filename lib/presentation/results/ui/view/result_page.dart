@@ -73,22 +73,27 @@ class _ResultPageState extends ConsumerState<ResultPage> {
             enablePullUp: !isEnd,
             controller: refreshController,
             onLoading: _onLoading,
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(data[index].title),
-                  subtitle: Text(
-                      data[index].datePublished!.convertDateTimeInFormat()),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return const Divider(
-                  height: 1,
-                );
-              },
-            ),
+            child: data.isNotEmpty
+                ? ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(data[index].title),
+                        subtitle: Text(data[index]
+                            .datePublished!
+                            .convertDateTimeInFormat()),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider(
+                        height: 1,
+                      );
+                    },
+                  )
+                : const Center(
+                    child: Text('No results'),
+                  ),
           );
         },
         error: (e, st) {

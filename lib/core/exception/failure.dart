@@ -21,10 +21,10 @@ extension NetworkHandler on DioError {
     }
 
     switch (response!.statusCode) {
-      case 400:
       // return Failure.badState(tempFailureResponse);
       case 500:
         return Failure.serverError(response!.statusMessage);
+      case 400:
       case 401:
       // return Failure.unauthorizedAccess(tempFailureResponse);
       case 409:
@@ -37,7 +37,7 @@ extension NetworkHandler on DioError {
 
 extension FailureMapper on Failure {
   String failureMessage() => map(
-        offline: (s) => '',
+        offline: (s) => 'No internet. Please check internet connection',
         // authenticationFailure: (s) => 'Authentication failure',
         serverError: (s) =>
             s.errorMessage ?? 'Server error, please try again later!',
