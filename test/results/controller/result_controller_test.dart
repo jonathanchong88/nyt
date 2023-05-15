@@ -28,7 +28,7 @@ void main() {
     resetMocktailState();
   });
 
-  // Group tests by methods from AuthController
+  // Group tests by methods from get most view results
   group('get most view result controller tests', () {
     test(
       'success',
@@ -68,6 +68,50 @@ void main() {
         //
         // run
         await resultController.getMostViewResults();
+      },
+    );
+  });
+
+  // Group tests by methods from search results
+  group('get search result controller tests', () {
+    test(
+      'success',
+      () async {
+        when(() => repositoryRepository.getSearchResults('', 0)).thenAnswer(
+          (_) async => Right(resultEntityList),
+        );
+
+        // verify
+        // Assert
+        expectLater(
+          resultController.stream,
+          emitsInOrder([AsyncValue.data(resultEntityList)]),
+        );
+        //
+        // run
+        await resultController.getSearchResults('', 0);
+      },
+    );
+
+    test(
+      'fail',
+      () async {
+        when(() => repositoryRepository.getSearchResults('', 0)).thenAnswer(
+          (_) async => const Left(Failure.offline()),
+        );
+
+        // verify
+        // Assert
+        expectLater(
+          resultController.stream,
+          emitsInOrder([
+            const AsyncError<List<ResultEntity>>(
+                Failure.offline(), StackTrace.empty),
+          ]),
+        );
+        //
+        // run
+        await resultController.getSearchResults('', 0);
       },
     );
   });
