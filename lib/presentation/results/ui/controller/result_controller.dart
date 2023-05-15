@@ -1,33 +1,29 @@
-import 'package:nyt/presentation/results/di/di.dart';
-import 'package:nyt/presentation/results/domain/entity/result_entity.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nyt/presentation/results/domain/domain.dart';
 
-part 'result_controller.g.dart';
+class ResultController extends StateNotifier<AsyncValue<List<ResultEntity>>> {
+  ResultController(
+    IResultRepository resultRepository,
+  )   : _resultRepository = resultRepository,
+        super(const AsyncValue.loading());
 
-@riverpod
-class ResultController extends _$ResultController {
-  late List<ResultEntity>? resultEntitys = [];
-  @override
-  FutureOr<List<ResultEntity>> build() {
-    // nothing to do
-    return [];
-  }
+  final IResultRepository _resultRepository;
+  List<ResultEntity>? resultEntitys = [];
 
   Future<void> getSearchResults(String query, int page) async {
     if (page == 0) {
       state = const AsyncValue.loading();
     }
-    final failureOrData =
-        await ref.read(resultProvider).getSearchResults(query, page);
+    final failureOrData = await _resultRepository.getSearchResults(query, page);
 
     state = failureOrData.fold(
       (failure) => AsyncError(failure, StackTrace.empty),
       (results) {
-        if (state.value!.length > 1) {
-          resultEntitys!.addAll(results);
+        if (state.value == null) {
+          resultEntitys = results;
           return AsyncValue.data(resultEntitys!);
         } else {
-          resultEntitys = results;
+          resultEntitys!.addAll(results);
           return AsyncValue.data(resultEntitys!);
         }
       },
@@ -36,7 +32,7 @@ class ResultController extends _$ResultController {
 
   Future<void> getMostViewResults() async {
     state = const AsyncValue.loading();
-    final failureOrData = await ref.read(resultProvider).getMostViewResults();
+    final failureOrData = await _resultRepository.getMostViewResults();
 
     state = failureOrData.fold(
       (failure) => AsyncError(failure, StackTrace.empty),

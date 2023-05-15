@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nyt/core/core.dart';
+import 'package:nyt/presentation/results/di/di.dart';
 import 'package:nyt/presentation/results/ui/controller/result_controller.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
