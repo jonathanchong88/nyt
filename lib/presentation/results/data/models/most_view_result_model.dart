@@ -19,7 +19,6 @@ class MostViewResultModel {
   }) : id = Isar.autoIncrement;
 
   List<ResultEntity> toEntity() {
-    print(results);
     return results!
         .map(
           (e) => ResultEntity(

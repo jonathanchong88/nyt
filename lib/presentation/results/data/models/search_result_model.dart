@@ -62,9 +62,9 @@ class Doc {
   final String? leadParagraph;
   final String? source;
   final List<Multimedia>? multimedia;
-  final Headline? headline;
+  final Headline headline;
   final List<Keyword>? keywords;
-  final String? pubDate;
+  final String pubDate;
   final String? documentType;
   final String? newsDesk;
   final String? sectionName;
@@ -86,9 +86,9 @@ class Doc {
     this.leadParagraph,
     this.source,
     this.multimedia,
-    this.headline,
+    this.headline = const Headline(),
     this.keywords,
-    this.pubDate,
+    this.pubDate = '',
     this.documentType,
     this.newsDesk,
     this.sectionName,
@@ -104,7 +104,8 @@ class Doc {
 
   ResultEntity toEntity() {
     return ResultEntity(
-        title: headline!.main!, datePublished: DateTime.parse(pubDate!));
+        title: headline.main,
+        datePublished: pubDate.isNotEmpty ? DateTime.parse(pubDate) : null);
   }
 
   factory Doc.fromJson(Map<String, dynamic> json) => Doc(
@@ -117,9 +118,7 @@ class Doc {
             ? []
             : List<Multimedia>.from(
                 json["multimedia"]!.map((x) => Multimedia.fromJson(x))),
-        headline: json["headline"] == null
-            ? null
-            : Headline.fromJson(json["headline"]),
+        headline: Headline.fromJson(json["headline"]),
         keywords: json["keywords"] == null
             ? []
             : List<Keyword>.from(
@@ -242,7 +241,7 @@ class Person {
 
 @embedded
 class Headline {
-  final String? main;
+  final String main;
   final String? kicker;
   final String? contentKicker;
   final String? printHeadline;
@@ -250,8 +249,8 @@ class Headline {
   final String? seo;
   final String? sub;
 
-  Headline({
-    this.main,
+  const Headline({
+    this.main = '',
     this.kicker,
     this.contentKicker,
     this.printHeadline,
@@ -261,7 +260,7 @@ class Headline {
   });
 
   factory Headline.fromJson(Map<String, dynamic> json) => Headline(
-        main: json["main"],
+        main: json['main'] as String? ?? '',
         kicker: json["kicker"],
         contentKicker: json["content_kicker"],
         printHeadline: json["print_headline"],

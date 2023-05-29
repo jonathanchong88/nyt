@@ -16,3 +16,8 @@ class MockResultLocalDataSource extends Mock implements ResultLocalDataSource {}
 //repository
 class MockIResultRepositoryRepository extends Mock
     implements IResultRepository {}
+
+//model
+class MockMostViewResultModel extends Mock implements MostViewResultModel {}
+
+class MockDoc extends Mock implements Doc {}

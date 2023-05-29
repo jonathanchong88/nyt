@@ -188,13 +188,9 @@ int _docEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  {
-    final value = object.headline;
-    if (value != null) {
-      bytesCount += 3 +
-          HeadlineSchema.estimateSize(value, allOffsets[Headline]!, allOffsets);
-    }
-  }
+  bytesCount += 3 +
+      HeadlineSchema.estimateSize(
+          object.headline, allOffsets[Headline]!, allOffsets);
   {
     final list = object.keywords;
     if (list != null) {
@@ -246,12 +242,7 @@ int _docEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  {
-    final value = object.pubDate;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.pubDate.length * 3;
   {
     final value = object.sectionName;
     if (value != null) {
@@ -361,10 +352,11 @@ Doc _docDeserialize(
     docId: reader.readStringOrNull(offsets[2]),
     documentType: reader.readStringOrNull(offsets[3]),
     headline: reader.readObjectOrNull<Headline>(
-      offsets[4],
-      HeadlineSchema.deserialize,
-      allOffsets,
-    ),
+          offsets[4],
+          HeadlineSchema.deserialize,
+          allOffsets,
+        ) ??
+        const Headline(),
     keywords: reader.readObjectList<Keyword>(
       offsets[5],
       KeywordSchema.deserialize,
@@ -381,7 +373,7 @@ Doc _docDeserialize(
     newsDesk: reader.readStringOrNull(offsets[8]),
     printPage: reader.readStringOrNull(offsets[9]),
     printSection: reader.readStringOrNull(offsets[10]),
-    pubDate: reader.readStringOrNull(offsets[11]),
+    pubDate: reader.readStringOrNull(offsets[11]) ?? '',
     sectionName: reader.readStringOrNull(offsets[12]),
     snippet: reader.readStringOrNull(offsets[13]),
     source: reader.readStringOrNull(offsets[14]),
@@ -415,10 +407,11 @@ P _docDeserializeProp<P>(
       return (reader.readStringOrNull(offset)) as P;
     case 4:
       return (reader.readObjectOrNull<Headline>(
-        offset,
-        HeadlineSchema.deserialize,
-        allOffsets,
-      )) as P;
+            offset,
+            HeadlineSchema.deserialize,
+            allOffsets,
+          ) ??
+          const Headline()) as P;
     case 5:
       return (reader.readObjectList<Keyword>(
         offset,
@@ -442,7 +435,7 @@ P _docDeserializeProp<P>(
     case 10:
       return (reader.readStringOrNull(offset)) as P;
     case 11:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 12:
       return (reader.readStringOrNull(offset)) as P;
     case 13:
@@ -1115,22 +1108,6 @@ extension DocQueryFilter on QueryBuilder<Doc, Doc, QFilterCondition> {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'documentType',
         value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Doc, Doc, QAfterFilterCondition> headlineIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'headline',
-      ));
-    });
-  }
-
-  QueryBuilder<Doc, Doc, QAfterFilterCondition> headlineIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'headline',
       ));
     });
   }
@@ -1967,24 +1944,8 @@ extension DocQueryFilter on QueryBuilder<Doc, Doc, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Doc, Doc, QAfterFilterCondition> pubDateIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'pubDate',
-      ));
-    });
-  }
-
-  QueryBuilder<Doc, Doc, QAfterFilterCondition> pubDateIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'pubDate',
-      ));
-    });
-  }
-
   QueryBuilder<Doc, Doc, QAfterFilterCondition> pubDateEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1997,7 +1958,7 @@ extension DocQueryFilter on QueryBuilder<Doc, Doc, QFilterCondition> {
   }
 
   QueryBuilder<Doc, Doc, QAfterFilterCondition> pubDateGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -2012,7 +1973,7 @@ extension DocQueryFilter on QueryBuilder<Doc, Doc, QFilterCondition> {
   }
 
   QueryBuilder<Doc, Doc, QAfterFilterCondition> pubDateLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -2027,8 +1988,8 @@ extension DocQueryFilter on QueryBuilder<Doc, Doc, QFilterCondition> {
   }
 
   QueryBuilder<Doc, Doc, QAfterFilterCondition> pubDateBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -3771,7 +3732,7 @@ extension DocQueryProperty on QueryBuilder<Doc, Doc, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Doc, Headline?, QQueryOperations> headlineProperty() {
+  QueryBuilder<Doc, Headline, QQueryOperations> headlineProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'headline');
     });
@@ -3813,7 +3774,7 @@ extension DocQueryProperty on QueryBuilder<Doc, Doc, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Doc, String?, QQueryOperations> pubDateProperty() {
+  QueryBuilder<Doc, String, QQueryOperations> pubDateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'pubDate');
     });
@@ -5725,12 +5686,7 @@ int _headlineEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  {
-    final value = object.main;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.main.length * 3;
   {
     final value = object.name;
     if (value != null) {
@@ -5782,7 +5738,7 @@ Headline _headlineDeserialize(
   final object = Headline(
     contentKicker: reader.readStringOrNull(offsets[0]),
     kicker: reader.readStringOrNull(offsets[1]),
-    main: reader.readStringOrNull(offsets[2]),
+    main: reader.readStringOrNull(offsets[2]) ?? '',
     name: reader.readStringOrNull(offsets[3]),
     printHeadline: reader.readStringOrNull(offsets[4]),
     seo: reader.readStringOrNull(offsets[5]),
@@ -5803,7 +5759,7 @@ P _headlineDeserializeProp<P>(
     case 1:
       return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
@@ -6117,24 +6073,8 @@ extension HeadlineQueryFilter
     });
   }
 
-  QueryBuilder<Headline, Headline, QAfterFilterCondition> mainIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'main',
-      ));
-    });
-  }
-
-  QueryBuilder<Headline, Headline, QAfterFilterCondition> mainIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'main',
-      ));
-    });
-  }
-
   QueryBuilder<Headline, Headline, QAfterFilterCondition> mainEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -6147,7 +6087,7 @@ extension HeadlineQueryFilter
   }
 
   QueryBuilder<Headline, Headline, QAfterFilterCondition> mainGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -6162,7 +6102,7 @@ extension HeadlineQueryFilter
   }
 
   QueryBuilder<Headline, Headline, QAfterFilterCondition> mainLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -6177,8 +6117,8 @@ extension HeadlineQueryFilter
   }
 
   QueryBuilder<Headline, Headline, QAfterFilterCondition> mainBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,

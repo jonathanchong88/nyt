@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:nyt/core/core.dart';
-import 'package:nyt/presentation/results/domain/entity/result_entity.dart';
+import 'package:nyt/presentation/results/domain/domain.dart';
 
 abstract class IResultRepository {
   Future<Either<Failure, List<ResultEntity>>> getSearchResults(
